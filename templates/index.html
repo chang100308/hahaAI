@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hahaAI - Detailed Document Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #FAFAF9;
+            color: #1C1917;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="selection:bg-indigo-100 selection:text-indigo-800">
+
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="bg-indigo-600 p-2 rounded-xl text-white shadow-lg shadow-indigo-200">
+                    <i data-lucide="brain-circuit" class="w-5 h-5"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">hahaAI</span>
+            </div>
+            <div class="text-sm font-medium text-stone-500 hidden sm:block">Detailed Intelligence Workspace</div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <section id="upload-section" class="max-w-3xl mx-auto text-center space-y-8 fade-in">
+            <div class="space-y-4">
+                <h1 class="text-4xl sm:text-5xl font-extrabold text-stone-900 tracking-tight">
+                    Deep insights from <br class="hidden sm:block" />
+                    <span class="text-indigo-600">every document detail</span>
+                </h1>
+                <p class="text-lg text-stone-500 max-w-xl mx-auto leading-relaxed">
+                    Upload a JPG. Our engine analyzes the image text and file metadata to provide a comprehensive executive breakdown.
+                </p>
+            </div>
+
+            <div class="glass-panel rounded-3xl p-8 shadow-xl shadow-stone-200/50 transition-all hover:shadow-2xl hover:shadow-indigo-100/50 group cursor-pointer relative overflow-hidden" onclick="document.getElementById('file-upload').click()">
+                <div class="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                <div class="relative z-10 flex flex-col items-center gap-6">
+                    <div class="w-20 h-20 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="file-up" class="w-8 h-8"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-stone-900">Upload JPG for Deep Scan</h3>
+                        <p class="text-stone-500 mt-2 text-sm">Extracts content, metadata, and themes</p>
+                    </div>
+                    <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-full font-semibold transition-all shadow-lg shadow-indigo-200 active:scale-95">
+                        Browse Files
+                    </button>
+                </div>
+                <input type="file" id="file-upload" class="hidden" accept=".jpg,.jpeg" onchange="handleFileUpload(this)">
+            </div>
+        </section>
+
+        <div id="loading-state" class="hidden max-w-lg mx-auto text-center py-20 fade-in">
+            <div class="relative w-24 h-24 mx-auto mb-8">
+                <div class="absolute inset-0 border-4 border-indigo-100 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-indigo-600 rounded-full border-t-transparent animate-spin"></div>
+                <i data-lucide="binary" class="absolute inset-0 m-auto text-indigo-600 w-8 h-8 animate-pulse"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-stone-900">Generating Deep Report</h3>
+            <p class="text-stone-500 mt-2">Correlating text content with file metadata...</p>
+        </div>
+
+        <section id="dashboard-section" class="hidden space-y-8 fade-in pb-20">
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-200 pb-6">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="px-2.5 py-0.5 rounded-md bg-indigo-100 text-indigo-600 text-xs font-bold uppercase tracking-wider" id="file-type-badge">JPG</span>
+                        <span class="text-xs text-stone-400 font-medium" id="timestamp-badge">Processed Just Now</span>
+                    </div>
+                    <h2 class="text-3xl font-bold text-stone-900" id="doc-title">Report Title</h2>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="downloadReport()" class="flex items-center gap-2 px-4 py-2 bg-white border border-stone-200 rounded-lg text-stone-600 font-medium hover:bg-stone-50 transition-colors">
+                        <i data-lucide="download" class="w-4 h-4"></i> Export Result
+                    </button>
+                    <button onclick="location.reload()" class="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors shadow-md shadow-indigo-100">
+                        <i data-lucide="refresh-cw" class="w-4 h-4"></i> Reset
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white rounded-2xl p-8 shadow-sm border border-stone-100">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-2 bg-amber-50 text-amber-600 rounded-lg">
+                                <i data-lucide="scroll-text" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-stone-900">Detailed Executive Summary</h3>
+                        </div>
+                        <div id="ai-summary" class="text-stone-700 leading-relaxed space-y-4">
+                            </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm">
+                            <div class="text-stone-400 text-[10px] font-bold uppercase tracking-widest mb-1">File Size</div>
+                            <div class="text-xl font-extrabold text-stone-900" id="meta-size">0 KB</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm">
+                            <div class="text-stone-400 text-[10px] font-bold uppercase tracking-widest mb-1">Word Count</div>
+                            <div class="text-xl font-extrabold text-stone-900" id="word-count">0</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm">
+                            <div class="text-stone-400 text-[10px] font-bold uppercase tracking-widest mb-1">Format</div>
+                            <div class="text-xl font-extrabold text-stone-900" id="meta-format">JPEG</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm">
+                            <div class="text-stone-400 text-[10px] font-bold uppercase tracking-widest mb-1">Read Time</div>
+                            <div class="text-xl font-extrabold text-stone-900" id="read-time">0m</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-stone-100 h-full flex flex-col">
+                        <div class="flex items-center gap-2 mb-6">
+                            <div class="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+                                <i data-lucide="bar-chart-big" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-stone-900">Thematic Density</h3>
+                        </div>
+                        <div class="chart-container flex-grow">
+                            <canvas id="keywordChart"></canvas>
+                        </div>
+                        <p class="text-[10px] text-stone-400 mt-4 text-center italic">Algorithm filters out common stop words.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden">
+                <div class="px-8 py-5 border-b border-stone-100 flex items-center justify-between bg-stone-50/30">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="align-left" class="w-5 h-5 text-stone-400"></i>
+                        <h3 class="text-sm font-bold text-stone-900">Transcription Result</h3>
+                    </div>
+                    <button onclick="toggleEditMode()" id="edit-toggle" class="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-stone-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all border border-transparent hover:border-indigo-100">
+                        <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> <span id="edit-status">Edit Mode</span>
+                    </button>
+                </div>
+                
+                <div class="relative">
+                    <div id="read-view" class="p-8 font-mono text-sm leading-relaxed text-stone-700 whitespace-pre-wrap min-h-[400px]"></div>
+                    <textarea id="edit-view" class="hidden w-full h-full min-h-[400px] p-8 font-mono text-sm leading-relaxed text-stone-700 bg-indigo-50/10 focus:outline-none focus:bg-white transition-colors resize-y" spellcheck="false"></textarea>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        lucide.createIcons();
+        let currentChart = null;
+        let originalContent = "";
+        let isEditing = false;
+
+        async function handleFileUpload(input) {
+            // FIX 1: Safety Check to prevent 'undefined size' error
+            if (!input.files || input.files.length === 0) return;
+            
+            const file = input.files[0];
+            const fileSize = (file.size / 1024).toFixed(2);
+
+            document.getElementById('upload-section').classList.add('hidden');
+            document.getElementById('loading-state').classList.remove('hidden');
+
+            try {
+                const base64Data = await fileToBase64(file);
+                const pureBase64 = base64Data.split(',')[1]; 
+
+                // Fetching from your local Flask /analyze endpoint
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        image: pureBase64,
+                        filename: file.name,
+                        fileSize: fileSize
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.error) throw new Error(data.error);
+
+                // FIX 2: Manually add meta data if the Python response misses it
+                if(!data.meta) {
+                    data.meta = { size: fileSize + " KB", type: file.type };
+                }
+
+                renderDashboard(data, file.name);
+
+            } catch (err) {
+                console.error(err);
+                alert("Scan failed: " + err.message);
+                location.reload();
+            }
+        }
+
+        function renderDashboard(data, filename) {
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+
+            document.getElementById('doc-title').innerText = filename;
+            
+            const summaryDiv = document.getElementById('ai-summary');
+            summaryDiv.innerHTML = data.summary_detailed.split('\n').map(p => `<p class="mb-3">${p}</p>`).join('');
+            
+            document.getElementById('meta-size').innerText = data.meta.size;
+            document.getElementById('meta-format').innerText = data.meta.type.includes('/') ? data.meta.type.split('/')[1].toUpperCase() : 'JPG';
+            
+            originalContent = data.original_content;
+            document.getElementById('read-view').innerText = originalContent;
+            document.getElementById('edit-view').value = originalContent;
+
+            const words = originalContent.trim().split(/\s+/).filter(w => w.length > 0);
+            document.getElementById('word-count').innerText = words.length.toLocaleString();
+            document.getElementById('read-time').innerText = `${Math.ceil(words.length / 200)}m`;
+
+            renderChart(words);
+            lucide.createIcons();
+        }
+
+        function renderChart(words) {
+            const ctx = document.getElementById('keywordChart').getContext('2d');
+            const stopWords = new Set(['the', 'and', 'to', 'of', 'a', 'in', 'is', 'that', 'for', 'it', 'on', 'with', 'as', 'this', 'was', 'at', 'by', 'an', 'be', 'from']);
+            const freq = {};
+            
+            words.forEach(word => {
+                const w = word.toLowerCase().replace(/[^a-z0-9]/g, '');
+                if (w.length > 3 && !stopWords.has(w)) freq[w] = (freq[w] || 0) + 1;
+            });
+
+            const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            const labels = sorted.map(i => i[0]);
+            const values = sorted.map(i => i[1]);
+
+            if (currentChart) currentChart.destroy();
+            currentChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: '#6366f1',
+                        borderRadius: 8,
+                        barThickness: 32
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        x: { display: false },
+                        y: { grid: { display: false }, ticks: { font: { weight: '600' } } }
+                    }
+                }
+            });
+        }
+
+        function toggleEditMode() {
+            isEditing = !isEditing;
+            const rv = document.getElementById('read-view');
+            const ev = document.getElementById('edit-view');
+            const st = document.getElementById('edit-status');
+            const btn = document.getElementById('edit-toggle');
+
+            if (isEditing) {
+                rv.classList.add('hidden');
+                ev.classList.remove('hidden');
+                st.innerText = "Save Changes";
+                btn.classList.add('bg-indigo-600', 'text-white');
+                ev.focus();
+            } else {
+                originalContent = ev.value;
+                rv.innerText = originalContent;
+                rv.classList.remove('hidden');
+                ev.classList.add('hidden');
+                st.innerText = "Edit Mode";
+                btn.classList.remove('bg-indigo-600', 'text-white');
+                renderChart(originalContent.trim().split(/\s+/));
+            }
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+            });
+        }
+
+        function downloadReport() {
+            const summaryText = document.getElementById('ai-summary').innerText;
+            const text = `--- HAHA AI REPORT ---\n\nDETAILED SUMMARY:\n${summaryText}\n\nTRANSCRIPTION:\n${originalContent}`;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${document.getElementById('doc-title').innerText}_analysis.txt`;
+            a.click();
+        }
+    </script>
+</body>
+</html>
