@@ -48,6 +48,8 @@ def analyze_image():
         return jsonify({"error": str(e)}), 500
 
 import os
+API_KEY = os.environ.get("GEMINI_API_KEY") 
+client = genai.Client(api_key=API_KEY)
 
 if __name__ == '__main__':
     # Get the port from the environment (default to 5000)
