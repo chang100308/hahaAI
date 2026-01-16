@@ -47,5 +47,10 @@ def analyze_image():
         print(f"Error: {e}")
         return jsonify({"error": str(e)}), 500
 
+import os
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # Get the port from the environment (default to 5000)
+    port = int(os.environ.get("PORT", 5000))
+    # host='0.0.0.0' is required for deployment
+    app.run(host='0.0.0.0', port=port)
