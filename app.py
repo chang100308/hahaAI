@@ -3,7 +3,6 @@ from google import genai
 from google.genai import types
 import json
 import base64
-import pypdfium2 as pdfium
 
 app = Flask(__name__)
 
